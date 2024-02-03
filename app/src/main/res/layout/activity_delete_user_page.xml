@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    tools:context=".DeleteUserPage">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/emailTextInputLayoutDeleteUserPage"
+        style="@style/Theme.Material3.DayNight.NoActionBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/emailEditTextDeleteUserPage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Email"
+            android:inputType="textEmailAddress"
+            android:textColor="@color/black"
+            android:textColorHint="#8D6E63"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText,TouchTargetSizeCheck,VisualLintTextFieldSize" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/passwordTextInputLayoutDeleteUserPage"
+        style="@style/Theme.Material3.DayNight.NoActionBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:passwordToggleTint="@color/black"
+        app:passwordToggleEnabled="true"
+        android:layout_marginTop="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/passwordEditTextDeleteUserPage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter Password"
+            android:inputType="textPassword"
+            android:textColor="@color/black"
+            android:textColorHint="#8D6E63"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            tools:ignore="HardcodedText,TouchTargetSizeCheck,VisualLintTextFieldSize" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+   <Button
+       android:id="@+id/deleteButtonDeleteUserPage"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:layout_marginTop="20dp"
+       android:text="Delete Account"
+       android:textColor="@color/white"
+       android:textStyle="bold"
+       android:textSize="28sp"
+       android:backgroundTint="@color/blue"/>
+    <Button
+        android:id="@+id/backDeleteUserPage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Back"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:textSize="28sp"
+        android:backgroundTint="@color/blue"/>
+
+
+</LinearLayout>

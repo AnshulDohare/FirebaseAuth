@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Firebase;
+import com.google.firebase.auth.ActionCodeSettings;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -163,7 +164,7 @@ public class SignUpPage extends AppCompatActivity {
     }
 
     private void storeUserInfo(String email, String firstName, String lastName, String address, String password,String uid) {
-        progressDialog.setTitle("Signing In...");
+        progressDialog.setTitle("Sending Email Verification Link...");
         database = FirebaseDatabase.getInstance();
         DatabaseReference databaseReference = database.getReference();
         HashMap<String,String> map = new HashMap<>();
@@ -194,22 +195,45 @@ public class SignUpPage extends AppCompatActivity {
         storageReference.child("MyUsersPic/"+uid).putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
             @Override
             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                auth.signInWithEmailAndPassword(email,password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
-                    @Override
-                    public void onSuccess(AuthResult authResult) {
-                        progressDialog.dismiss();
-                        startActivity(new Intent(SignUpPage.this,Dashboard.class));
-                        finish();
+                //auth.signInWithEmailAndPassword(email,password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
+                    //@Override
+                    //public void onSuccess(AuthResult authResult) {
+                        auth.getCurrentUser().sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                if(auth.getCurrentUser().isEmailVerified()){
+                                    progressDialog.dismiss();
+                                    Log.v("Currrent User1 ::::::",auth.getUid());
+                                    startActivity(new Intent(SignUpPage.this,Dashboard.class));
+                                    finish();
+                                }
+                                else{
+                                    progressDialog.dismiss();
+                                    Log.v("Currrent User2 ::::::",auth.getUid());
+                                    startActivity(new Intent(SignUpPage.this, EmailVerification.class));
+                                    finish();
+                                }
+
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                progressDialog.dismiss();
+                                Log.v("Currrent User3 ::::::",auth.getUid());
+                                DeleteMyUser.deleteMyUser(SignUpPage.this);
+                            }
+                        });
+
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        progressDialog.dismiss();
-                        startActivity(new Intent(SignUpPage.this,SignInPage.class));
-                        finish();
-                    }
-                });
-            }
+                //}).addOnFailureListener(new OnFailureListener() {
+                //    @Override
+                //    public void onFailure(@NonNull Exception e) {
+                //        progressDialog.dismiss();
+                //        startActivity(new Intent(SignUpPage.this,SignInPage.class));
+                //        finish();
+                //    }
+                //});
+            //}
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {

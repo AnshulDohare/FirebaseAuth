@@ -8,7 +8,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -20,8 +22,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.util.Objects;
+
 public class Dashboard extends AppCompatActivity {
     Button userProfile,logOut,deleteAccount;
+    LinearLayout dashboard;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,9 +34,9 @@ public class Dashboard extends AppCompatActivity {
         userProfile = findViewById(R.id.userProfileButtonDashBoard);
         logOut = findViewById(R.id.logOutButtonDashBoard);
         deleteAccount = findViewById(R.id.deleteAccountButtonDashBoard);
-        if(FirebaseAuth.getInstance().getCurrentUser()==null){
-            startActivity(new Intent(this,SignInPage.class));
-        }
+        dashboard = findViewById(R.id.layoutDashBoard);
+        deleteAccount.setVisibility(View.VISIBLE);
+        deleteAccount.setEnabled(true);
 
         userProfile.setOnClickListener(v->startActivity(new Intent(this, UserProfile.class)));
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -44,24 +49,20 @@ public class Dashboard extends AppCompatActivity {
         });
 
         deleteAccount.setOnClickListener(v-> {
-            AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-            builder1.setTitle("Delete Account").setMessage("Are You Sure ?").setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    deleteUser();
-                }
-            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-
-                }
-            }).show();
+            startActivity(new Intent(this, DeleteUserPage.class));
         });
+
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            startActivity(new Intent(Dashboard.this, SignInPage.class));
+            finish();
+        }
 
     }
 
     private synchronized void deleteUser() {
-            FirebaseUser auth = FirebaseAuth.getInstance().getCurrentUser();
+
+        DeleteMyUser.deleteMyUser(Dashboard.this);
+            /*FirebaseUser auth = FirebaseAuth.getInstance().getCurrentUser();
             FirebaseDatabase.getInstance().getReference().child("MyUsers/"+auth.getUid()).removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void unused) {
@@ -106,6 +107,7 @@ public class Dashboard extends AppCompatActivity {
                     Toast.makeText(Dashboard.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     Log.v("user Delete ::::::",e.getMessage());
                 }
-            });
+            });*/
     }
+
 }

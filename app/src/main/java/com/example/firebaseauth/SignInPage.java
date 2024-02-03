@@ -12,7 +12,9 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
@@ -34,6 +36,7 @@ public class SignInPage extends AppCompatActivity {
         signInButton = findViewById(R.id.signInButtonSignIn);
         signUpTextView =findViewById(R.id.signUpTextViewSignIn);
         forgetPasswordTextView = findViewById(R.id.forgetPasswordTextViewSignIn);
+        auth = FirebaseAuth.getInstance();
 
         signInButton.setOnClickListener(v->{
             String email = Objects.requireNonNull(emailEditText.getText()).toString().trim();
@@ -64,13 +67,31 @@ public class SignInPage extends AppCompatActivity {
     }
 
     public  void userSingIn(String email,String password){
-        auth = FirebaseAuth.getInstance();
+
+
+
         auth.signInWithEmailAndPassword(email,password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {
             @Override
             public void onSuccess(AuthResult authResult) {
-                Toast.makeText(SignInPage.this,"Success: "+ authResult.toString(), Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(SignInPage.this, Dashboard.class));
-                finish();
+                if(auth.getCurrentUser().isEmailVerified()){
+                    Toast.makeText(SignInPage.this,"Success: "+ authResult.toString(), Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(SignInPage.this, Dashboard.class));
+                    finish();
+                }
+                else{
+                    auth.getCurrentUser().sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Toast.makeText(SignInPage.this, "Verification Link Sent On Your Email", Toast.LENGTH_SHORT).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(SignInPage.this, "Try Again After Some Time : "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -83,7 +104,7 @@ public class SignInPage extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if(FirebaseAuth.getInstance().getCurrentUser()!=null){
+        if(FirebaseAuth.getInstance().getCurrentUser()!=null && FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()){
             startActivity(new Intent(SignInPage.this, Dashboard.class));
             finish();
         }
