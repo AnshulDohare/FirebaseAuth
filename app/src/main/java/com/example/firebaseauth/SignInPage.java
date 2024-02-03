@@ -83,11 +83,14 @@ public class SignInPage extends AppCompatActivity {
                         @Override
                         public void onSuccess(Void unused) {
                             Toast.makeText(SignInPage.this, "Verification Link Sent On Your Email", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(SignInPage.this, EmailVerification.class));
+                            finish();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(SignInPage.this, "Try Again After Some Time : "+e.getMessage(), Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(SignInPage.this, EmailVerification.class));
+                            finish();
                         }
                     });
                 }
