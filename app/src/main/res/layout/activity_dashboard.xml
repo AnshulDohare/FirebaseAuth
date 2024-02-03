@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Dashboard"
+    android:padding="20dp"
+    android:background="@color/white">
+    <Button
+        android:id="@+id/userProfileButtonDashBoard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/blue"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:layout_margin="5dp"
+        android:text="User Profile"
+        tools:ignore="HardcodedText,UnusedAttribute,VisualLintButtonSize" />
+    <Button
+        android:id="@+id/logOutButtonDashBoard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/blue"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:layout_margin="5dp"
+        android:text="Log Out"
+        tools:ignore="HardcodedText,UnusedAttribute,VisualLintButtonSize" />
+    <Button
+        android:id="@+id/deleteAccountButtonDashBoard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/blue"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:layout_margin="5dp"
+        android:text="Delete Account"
+        tools:ignore="HardcodedText,UnusedAttribute,VisualLintButtonSize" />
+</LinearLayout>

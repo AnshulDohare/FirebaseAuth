@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutUserProfile"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:scrollbars="none"
+    tools:context=".UserProfile">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <ImageView
+            android:id="@+id/profilePicImageViewUserProfile"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/image_background"
+            android:padding="5dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/profile_pic"
+            tools:ignore="ContentDescription" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/emailTextInputLayoutUserProfile"
+            style="@style/Theme.Material3.DayNight.NoActionBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/emailEditTextUserProfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Email"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/black"
+                android:textColorHint="#8D6E63"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText,TouchTargetSizeCheck,VisualLintTextFieldSize" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/firstNameTextInputLayoutUserProfile"
+            style="@style/Theme.Material3.DayNight.NoActionBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/firstNameEditTextUserProfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter First Name"
+                android:inputType="textPersonName"
+                android:textColor="@color/black"
+                android:textColorHint="#8D6E63"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText,TouchTargetSizeCheck,VisualLintTextFieldSize" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/lastNameTextInputLayoutUserProfile"
+            style="@style/Theme.Material3.DayNight.NoActionBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/lastNameEditTextUserProfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Last Name"
+                android:inputType="textPersonName"
+                android:textColor="@color/black"
+                android:textColorHint="#8D6E63"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText,TouchTargetSizeCheck,VisualLintTextFieldSize" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/addressTextInputLayoutUserProfile"
+            style="@style/Theme.Material3.DayNight.NoActionBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/addressEditTextUserProfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Address"
+                android:inputType="textPostalAddress"
+                android:textColor="@color/black"
+                android:textColorHint="#8D6E63"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText,TouchTargetSizeCheck,VisualLintTextFieldSize" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/passwordTextInputLayoutUserProfile"
+            style="@style/Theme.Material3.DayNight.NoActionBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:passwordToggleEnabled="true"
+            app:passwordToggleTint="@color/black">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/passwordEditTextUserProfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter Password"
+                android:inputType="textPassword"
+                android:textColor="@color/black"
+                android:textColorHint="#8D6E63"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                tools:ignore="HardcodedText,TouchTargetSizeCheck,VisualLintTextFieldSize" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/updateButtonUserProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/blue"
+            android:text="Save"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            tools:ignore="HardcodedText,UnusedAttribute,VisualLintButtonSize" />
+    </LinearLayout>
+</ScrollView>
