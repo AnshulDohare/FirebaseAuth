@@ -29,6 +29,7 @@ import java.util.Objects;
 public class Dashboard extends AppCompatActivity {
     Button userProfile,logOut,deleteAccount;
     LinearLayout dashboard;
+    String pass = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,15 +40,26 @@ public class Dashboard extends AppCompatActivity {
         dashboard = findViewById(R.id.layoutDashBoard);
         deleteAccount.setVisibility(View.VISIBLE);
         deleteAccount.setEnabled(true);
-        String pass = getIntent().getStringExtra("password");
-        Map<String,Object> map = new HashMap<>();
-        map.put("password",pass);
-        FirebaseDatabase.getInstance().getReference().child("MyUsers/"+FirebaseAuth.getInstance().getUid()).updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
+        try{
+            pass = getIntent().getStringExtra("password");
+            int id = getIntent().getIntExtra("id",0);
+            //Log.v("Password Errror 2",pass);
+            if(id==1){
+                Map<String,Object> map = new HashMap<>();
+                map.put("password",pass);
+                FirebaseDatabase.getInstance().getReference().child("MyUsers/"+FirebaseAuth.getInstance().getUid()).updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
 
+                    }
+                });
             }
-        });
+        }
+        catch (RuntimeException e){
+            throw new RuntimeException(e);
+        }
+
+
 
         userProfile.setOnClickListener(v->startActivity(new Intent(this, UserProfile.class)));
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

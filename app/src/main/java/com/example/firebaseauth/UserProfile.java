@@ -7,12 +7,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.webkit.URLUtil;
@@ -22,10 +24,12 @@ import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.BitmapImageDecoderResourceDecoder;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
@@ -38,6 +42,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,6 +51,7 @@ import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -59,7 +65,9 @@ public class UserProfile extends AppCompatActivity {
     StorageReference storageReference;
     Uri ImageUrl;
     ProgressDialog progressDialog;
-
+    int IMG_REQUEST_CODE = 1;
+    Uri imageUri = null;
+    UserInfo userInfo =new UserInfo();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +82,9 @@ public class UserProfile extends AppCompatActivity {
         profilePic = findViewById(R.id.profilePicImageViewUserProfile);
         btnSave = findViewById(R.id.updateButtonUserProfile);
         layout.setVisibility(View.INVISIBLE);
+        etEmail.setEnabled(false);
+        etEmail.setFocusable(false);
+        etPassword.setFocusable(false);
 
         String uid = FirebaseAuth.getInstance().getUid();
 
@@ -91,13 +102,14 @@ public class UserProfile extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
-                    UserInfo userInfo = snapshot.getValue(UserInfo.class);
+                    downloadViaUrl();
+                    userInfo = snapshot.getValue(UserInfo.class);
                     etEmail.setText(Objects.requireNonNull(userInfo).getEmail());
                     etFirstName.setText(userInfo.getFirstName());
                     etLastName.setText(userInfo.getLastName());
                     etAddress.setText(userInfo.getAddress());
                     etPassword.setText(userInfo.getPassword());
-                    downloadViaUrl();
+
                     progressDialog.dismiss();
 
                 }
@@ -116,7 +128,10 @@ public class UserProfile extends AppCompatActivity {
         });
 
         profilePic.setOnClickListener(v->{
-
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent,"Select Picture"),IMG_REQUEST_CODE);
         });
 
         profilePic.setOnLongClickListener(new View.OnLongClickListener() {
@@ -153,7 +168,67 @@ public class UserProfile extends AppCompatActivity {
             }
         });
 
-        btnSave.setOnClickListener(v -> Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show());
+        btnSave.setOnClickListener(v -> {
+            ProgressDialog progressDialog1 = new ProgressDialog(this);
+            progressDialog1.setTitle("Updating Info");
+            Toast.makeText(this, "Saved", Toast.LENGTH_SHORT).show();
+            String firstName = etFirstName.getText().toString().trim();
+            String lastName = etLastName.getText().toString().trim();
+            String address = etAddress.getText().toString().trim();
+            if(firstName.equals(userInfo.firstName)&&lastName.equals(userInfo.lastName) && address.equals(userInfo.address )&& (imageUri ==null)){
+                Toast.makeText(this, "You didn't make any updation", Toast.LENGTH_SHORT).show();
+            }
+            else if(firstName.isEmpty()&&lastName.isEmpty()&&address.isEmpty()){
+                Toast.makeText(this, "Enter All Information", Toast.LENGTH_SHORT).show();
+            }
+            else if(firstName.isEmpty()){
+                etFirstName.setError("Enter First Name");
+            }
+            else if(lastName.isEmpty()){
+                etLastName.setError("Enter Last Name");
+            }
+            else if(address.isEmpty()){
+                etAddress.setError("Enter Address");
+            }
+            else{
+                HashMap<String ,Object> map = new HashMap<>();
+                map.put("firstName",firstName);
+                map.put("lastName",lastName);
+                map.put("address",address);
+                FirebaseDatabase.getInstance().getReference().child("MyUsers/"+FirebaseAuth.getInstance().getUid()).updateChildren(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(UserProfile.this, "Data Successfully Updated", Toast.LENGTH_SHORT).show();
+                        if(imageUri!=null){
+                            FirebaseStorage.getInstance().getReference().child("MyUsersPic/"+FirebaseAuth.getInstance().getUid()).putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                @Override
+                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                    Toast.makeText(UserProfile.this, "Image Successfully Updated", Toast.LENGTH_SHORT).show();
+                                    progressDialog1.dismiss();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(UserProfile.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    progressDialog1.dismiss();
+                                }
+                            });
+                        }
+                        else{
+                            progressDialog1.dismiss();
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(UserProfile.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        progressDialog1.dismiss();
+                    }
+                });
+            }
+
+
+        });
     }
 
     private void downloadImageInLocalStorage() {
@@ -222,7 +297,7 @@ public class UserProfile extends AppCompatActivity {
     }*/
 
     //Download Image via Url
-    public void downloadViaUrl(){
+    public synchronized void downloadViaUrl(){
         StorageReference imageRer2 = storageReference.child("MyUsersPic/"+ Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid());
         imageRer2.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
@@ -270,5 +345,20 @@ public class UserProfile extends AppCompatActivity {
                 Log.v("Error1 : ",e.getMessage());
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(IMG_REQUEST_CODE==requestCode && resultCode ==RESULT_OK && !(data==null) && !(data.getData()==null)){
+            imageUri = data.getData();
+            profilePic.setImageURI(imageUri);
+            /*try {
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),imageUri);
+                profilePic.setImageBitmap(bitmap);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }*/
+        }
     }
 }

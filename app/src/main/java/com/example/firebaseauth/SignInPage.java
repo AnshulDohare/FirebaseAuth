@@ -101,6 +101,7 @@ public class SignInPage extends AppCompatActivity {
                     Toast.makeText(SignInPage.this,"Success: "+ authResult.toString(), Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(SignInPage.this, Dashboard.class);
                     intent.putExtra("password",password);
+                    intent.putExtra("id",1);
                     startActivity(intent);
                     finish();
                 }
