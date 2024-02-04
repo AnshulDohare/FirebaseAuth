@@ -9,8 +9,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -63,7 +65,29 @@ public class SignInPage extends AppCompatActivity {
 
         signUpTextView.setOnClickListener(v->startActivity(new Intent(this, SignUpPage.class)));
 
-        forgetPasswordTextView.setOnClickListener(v-> Toast.makeText(this, "Forget Password", Toast.LENGTH_SHORT).show());
+        forgetPasswordTextView.setOnClickListener(v-> {
+            String email = Objects.requireNonNull(emailEditText.getText()).toString().trim();
+            String regexSimpleEmail = "[a-zA-Z_]+\\d*[.]?[a-zA-Z_\\d]*[.]?[a-zA-Z\\d]+@[a-zA-Z]+.[a-zA-Z]{2,3}";
+            if(email.isEmpty()){
+                emailEditText.setError("Enter Email");
+            }
+            else if(!(Pattern.matches(regexSimpleEmail,email))){
+                emailEditText.setError("Wrong Format of Email");
+            }
+            else {
+                FirebaseAuth.getInstance().sendPasswordResetEmail(email).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Toast.makeText(SignInPage.this, "An password reset link sent on your email", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(SignInPage.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
     }
 
     public  void userSingIn(String email,String password){
@@ -75,7 +99,9 @@ public class SignInPage extends AppCompatActivity {
             public void onSuccess(AuthResult authResult) {
                 if(auth.getCurrentUser().isEmailVerified()){
                     Toast.makeText(SignInPage.this,"Success: "+ authResult.toString(), Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(SignInPage.this, Dashboard.class));
+                    Intent intent = new Intent(SignInPage.this, Dashboard.class);
+                    intent.putExtra("password",password);
+                    startActivity(intent);
                     finish();
                 }
                 else{
@@ -84,6 +110,7 @@ public class SignInPage extends AppCompatActivity {
                         public void onSuccess(Void unused) {
                             Toast.makeText(SignInPage.this, "Verification Link Sent On Your Email", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(SignInPage.this, EmailVerification.class));
+
                             finish();
                         }
                     }).addOnFailureListener(new OnFailureListener() {

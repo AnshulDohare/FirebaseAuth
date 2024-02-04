@@ -22,6 +22,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class Dashboard extends AppCompatActivity {
@@ -37,6 +39,15 @@ public class Dashboard extends AppCompatActivity {
         dashboard = findViewById(R.id.layoutDashBoard);
         deleteAccount.setVisibility(View.VISIBLE);
         deleteAccount.setEnabled(true);
+        String pass = getIntent().getStringExtra("password");
+        Map<String,Object> map = new HashMap<>();
+        map.put("password",pass);
+        FirebaseDatabase.getInstance().getReference().child("MyUsers/"+FirebaseAuth.getInstance().getUid()).updateChildren(map).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+
+            }
+        });
 
         userProfile.setOnClickListener(v->startActivity(new Intent(this, UserProfile.class)));
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
