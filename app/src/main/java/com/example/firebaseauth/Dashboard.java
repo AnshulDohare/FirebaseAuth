@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Dashboard extends AppCompatActivity {
-    Button userProfile,logOut,deleteAccount;
+    Button userProfile,logOut,deleteAccount,updateEmailPassword;
     LinearLayout dashboard;
     String pass = "";
     @Override
@@ -38,6 +38,7 @@ public class Dashboard extends AppCompatActivity {
         logOut = findViewById(R.id.logOutButtonDashBoard);
         deleteAccount = findViewById(R.id.deleteAccountButtonDashBoard);
         dashboard = findViewById(R.id.layoutDashBoard);
+        updateEmailPassword = findViewById(R.id.updatePasswordEmailButtonDashBoard);
         deleteAccount.setVisibility(View.VISIBLE);
         deleteAccount.setEnabled(true);
         try{
@@ -79,6 +80,10 @@ public class Dashboard extends AppCompatActivity {
             startActivity(new Intent(Dashboard.this, SignInPage.class));
             finish();
         }
+
+        updateEmailPassword.setOnClickListener(v->{
+            startActivity(new Intent(Dashboard.this, UpdateEmailPassword.class));
+        });
 
     }
 

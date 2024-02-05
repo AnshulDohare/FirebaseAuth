@@ -19,6 +19,9 @@
         android:theme="@style/Theme.FirebaseAuth"
         tools:targetApi="31">
         <activity
+            android:name=".UpdateEmailPassword"
+            android:exported="false"/>
+        <activity
             android:name=".DeleteUserPage"
             android:exported="false" />
         <activity
